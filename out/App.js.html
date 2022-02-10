@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {useContext} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+
+import Ocr from './ocr';
+import Aparat from './Aparat';
+import ZdjeciaContextProvider, {ZdjContext} from './Zdjecia';
+import NotatkiContextProvider, {NotatContext} from './Notatki';
+
+const Stack = createStackNavigator();
+
+/**
+ *Ekran startowy
+ *
+ * @param {*} {navigation} nawigacja 
+ * @returns wyświetla ekran główny z logo i przyciskami
+ *
+ */
+function HomeScreen({navigation}) { 
+  return (
+    &lt;View style={styles.widok}>
+      &lt;Image source={require('./assets/nowe.png')} />
+      &lt;TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Aparat')}>
+        &lt;Text style={styles.text}>Zrób zdjęcie&lt;/Text>
+      &lt;/TouchableOpacity>
+
+      &lt;TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Galeria')}>
+        &lt;Text style={styles.text}>Wybierz zdjęcie&lt;/Text>
+      &lt;/TouchableOpacity>
+
+      &lt;TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('ZapisaneNotatki')}>
+        &lt;Text style={styles.text}>Przeglądaj Notatki&lt;/Text>
+      &lt;/TouchableOpacity>
+    &lt;/View>
+  );
+}
+
+/**
+ *Wyswietlanie zapisanych notatek
+ *
+ * @param {*} {navigation} nawigacja 
+ * @returns wyświetla zapisane foldery
+ *
+ */
+
+function ZapisaneNotatki({navigation}) {
+  const [notatki, dodajNotatke] = useContext(NotatContext);
+  return (
+    &lt;View style={styles.widok}>
+      &lt;TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Home')}>
+        &lt;Text style={styles.text}>Powrót&lt;/Text>
+      &lt;/TouchableOpacity>
+      &lt;TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('ZawartoscFolderu')}>
+        &lt;Text style={styles.text}>Mikroprocesory&lt;/Text>
+      &lt;/TouchableOpacity>
+      &lt;TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('ZawartoscFolderu')}>
+        &lt;Text style={styles.text}>Technika Cyfrowa&lt;/Text>
+      &lt;/TouchableOpacity>
+    &lt;/View>
+  );
+}
+
+/**
+ *Przegladanie notatek
+ *
+ * @param {*} {navigation} nawigacja 
+ * @returns wyświetla zawartosc folderu
+ *
+ */
+
+
+function ZawartoscFolderu({navigation}) {
+  return (
+    &lt;View style={styles.widok}>
+      &lt;TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('OdczytanyTekst')}>
+        &lt;Text style={styles.text}>12.12.2020.txt&lt;/Text>
+      &lt;/TouchableOpacity>
+      &lt;TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('OdczytanyTekst')}>
+        &lt;Text style={styles.text}>09.11.txt&lt;/Text>
+      &lt;/TouchableOpacity>
+    &lt;/View>
+  );
+}
+
+/**
+ *Przegladanie wybranej notatki
+ *
+ * @param {*} {navigation} nawigacja 
+ * @returns wyświetla zawartosc pliku tekstowego
+ *
+ */
+
+
+function OdczytanyTekst({navigation}) {
+  return (
+    &lt;View style={styles.widok}>
+      &lt;Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sollicitudin lacus enim, ac molestie justo blandit eu. Donec gravida mauris et molestie congue. Suspendisse dapibus ipsum sit amet rutrum vehicula. Morbi posuere vestibulum lacus viverra tincidunt.&lt;/Text>
+      &lt;TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Home')}>
+        &lt;Text style={styles.text}>Powrót do menu&lt;/Text>
+      &lt;/TouchableOpacity>
+    &lt;/View>
+  );
+}
+
+const styles = StyleSheet.create({
+  button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#00cc7a',
+    color: '#29bc5f',
+    padding: 15,
+    height: '8%',
+    width: '65%',
+    marginBottom: 10,
+    marginTop: 10,
+    borderRadius: 25,
+    elevation: 15,
+  },
+  widok: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 20,
+    padding: 10,
+  },
+  text: {
+    color: 'white',
+    fontSize: 16,
+    textTransform: 'uppercase',
+  },
+});
+
+
+
+
+
+
+/**
+ *System nawigacji 
+ *
+ * @export Ekran
+ * @returns wyswietlanie ekranow
+ */
+export default function Ekrany() {
+  return (
+    &lt;NotatkiContextProvider>
+    &lt;ZdjeciaContextProvider>
+      &lt;NavigationContainer>
+        &lt;Stack.Navigator initialRouteName="Home">
+          &lt;Stack.Screen name="Home" component={HomeScreen} />
+          &lt;Stack.Screen name="ZapisaneNotatki" component={ZapisaneNotatki} />
+          &lt;Stack.Screen
+            name="OdczytanyTekst"
+            component={OdczytanyTekst}
+          />
+          &lt;Stack.Screen
+            name="ZawartoscFolderu"
+            component={ZawartoscFolderu}
+          />
+          &lt;Stack.Screen name="Galeria" component={Ocr} />
+          &lt;Stack.Screen name="TextDetectionComponent" component={Ocr} />
+          &lt;Stack.Screen name="Aparat" component={Aparat} />
+        &lt;/Stack.Navigator>
+      &lt;/NavigationContainer>
+    &lt;/ZdjeciaContextProvider>
+    &lt;/NotatkiContextProvider>
+   
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Aparat.html">Aparat</a></li><li><a href="ListaNotatek.html">ListaNotatek</a></li><li><a href="ListaZdjec.html">ListaZdjec</a></li><li><a href="Notatka.html">Notatka</a></li><li><a href="Ocr.html">Ocr</a></li><li><a href="Zdjecie.html">Zdjecie</a></li></ul><h3>Global</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li><li><a href="global.html#OdczytanyTekst">OdczytanyTekst</a></li><li><a href="global.html#ZapisaneNotatki">ZapisaneNotatki</a></li><li><a href="global.html#ZawartoscFolderu">ZawartoscFolderu</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Tue Jun 09 2020 12:23:11 GMT+0200 (czas środkowoeuropejski letni)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

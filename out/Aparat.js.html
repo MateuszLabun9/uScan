@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Aparat.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Aparat.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component, Fragment} from 'react';
+import {
+  Dimensions,
+  Image,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from 'react-native';
+import ImagePicker from 'react-native-image-picker';
+import RNTesseractOcr from 'react-native-tesseract-ocr';
+import { NavigationEvents } from 'react-navigation';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+
+const styles = StyleSheet.create({
+  scrollView: {
+    backgroundColor: Colors.lighter,
+  },
+  body: {
+    backgroundColor: Colors.lighter,
+    justifyContent: 'center',
+    borderColor: 'black',
+    borderWidth: 0,
+    height: Dimensions.get('screen').height - 128,
+    width: Dimensions.get('screen').width,
+    paddingHorizontal: 20,
+  },
+  ImageSections: {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    justifyContent: 'center',
+  },
+  images: {
+    width: 150,
+    height: 150,
+    borderColor: 'black',
+    borderWidth: 1,
+    marginHorizontal: 3,
+  },
+  btnParentSection: {
+    alignItems: 'center',
+  },
+  btnSection: {
+    width: 225,
+    height: 50,
+    backgroundColor: '#DCDCDC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 3,
+    marginBottom: 10,
+  },
+  btnText: {
+    textAlign: 'center',
+    color: 'gray',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#00cc7a',
+    color: '#29bc5f',
+    padding: 15,
+    width: '65%',
+    marginBottom: 10,
+    marginTop: 10,
+    height: 40,
+    borderRadius: 25,
+    elevation: 15,
+  },
+  text: {
+    color: 'white',
+    fontSize: 16,
+    textTransform: 'uppercase',
+  },
+  text2: {
+    color: 'black',
+    fontSize: 16,
+    textTransform: 'uppercase',
+  },
+});
+
+/**
+ *Aparat
+ *
+ * @export Aparat
+ * @class Aparat
+ * @extends {Component}
+ * @return Zrobione zdjecie
+ */
+export default class Aparat extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filepath: {
+        data: '',
+        uri: '',
+      },
+      fileData: '',
+      fileUri: '',
+    };
+  }
+
+  launchCamera = () => {
+    let options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.launchCamera(options, response => {
+      // console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+        //alert(response.customButton);
+      } else {
+        const tessOptions = {
+          whitelist: null,
+          blacklist: '1234567890\'!"#$%&amp;/()={}[]+*-_:;&lt;>',
+        };
+        console.log({...response, data: ''});
+        // const path = response.uri.replace('content://', '');
+        // console.log(path);
+        RNTesseractOcr.recognize(response.path, 'LANG_POLISH', tessOptions)
+          .then(result => {
+            this.setState({ocrResult: result});
+            console.log('OCR Result: ', result);
+          })
+          .catch(err => {
+            console.log('OCR Error: ', err);
+          })
+          .done();
+        this.setState({
+          filePath: response,
+          fileData: response.data,
+          fileUri: response.uri,
+        });
+      }
+    });
+  };
+
+  
+
+  renderFileUri() {
+    if (this.state.fileUri) {
+      return &lt;Image source={{uri: this.state.fileUri}} style={styles.images} />;
+    }
+  }
+  render() {
+    const scrollEnabled = false;
+    return (
+      &lt;Fragment>
+        &lt;StatusBar barStyle="dark-content" />
+        &lt;SafeAreaView>
+          &lt;View style={styles.body}>
+            &lt;ScrollView style={styles.scrollView}>
+              &lt;Text
+                style={{textAlign: 'center', fontSize: 20, paddingBottom: 10}}>
+                Zrób zdjęcie
+              &lt;/Text>
+              &lt;View style={styles.ImageSections}>
+                &lt;View>
+                  {this.renderFileUri()}
+                  &lt;Text style={{textAlign: 'center'}}>
+                    Podgląd wybranego zdjęcia
+                  &lt;/Text>
+                &lt;/View>
+              &lt;/View>
+
+              &lt;View style={styles.btnParentSection}>
+                &lt;TouchableOpacity
+                  onPress={this.launchCamera}
+                  style={styles.button}>
+                  &lt;Text style={styles.text}>Aparat&lt;/Text>
+                &lt;/TouchableOpacity>
+              &lt;/View>
+              &lt;Text style={styles.text2}>{this.state.ocrResult || 'Nie wybrano zdjęcia'}&lt;/Text>
+            &lt;/ScrollView>
+          &lt;/View>
+        &lt;/SafeAreaView>
+      &lt;/Fragment>
+    );
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Aparat.html">Aparat</a></li><li><a href="ListaNotatek.html">ListaNotatek</a></li><li><a href="ListaZdjec.html">ListaZdjec</a></li><li><a href="Notatka.html">Notatka</a></li><li><a href="Ocr.html">Ocr</a></li><li><a href="Zdjecie.html">Zdjecie</a></li></ul><h3>Global</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li><li><a href="global.html#OdczytanyTekst">OdczytanyTekst</a></li><li><a href="global.html#ZapisaneNotatki">ZapisaneNotatki</a></li><li><a href="global.html#ZawartoscFolderu">ZawartoscFolderu</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Tue Jun 09 2020 12:23:11 GMT+0200 (czas środkowoeuropejski letni)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

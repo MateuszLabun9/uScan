@@ -1,0 +1,48 @@
+{
+  "name": "uskan",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native run-android",
+    "test": "jest",
+    "lint": "eslint .",
+    "docs": "jsdoc -c jsdoc.conf.json"
+  },
+  "dependencies": {
+    "@react-native-community/masked-view": "0.1.6",
+    "@react-navigation/bottom-tabs": "^5.5.1",
+    "@react-navigation/drawer": "^5.8.1",
+    "@react-navigation/native": "^5.5.0",
+    "@react-navigation/stack": "^5.5.1",
+    "react": "^16.11.0",
+    "react-native": "^0.62.2",
+    "react-native-cli": "^2.0.1",
+    "react-native-gesture-handler": "~1.6.0",
+    "react-native-image-picker": "^2.3.1",
+    "react-native-reanimated": "~1.7.0",
+    "react-native-safe-area-context": "0.7.3",
+    "react-native-screens": "~2.2.0",
+    "react-native-tesseract-ocr": "^1.0.10",
+    "react-navigation": "^4.3.9"
+  },
+  "devDependencies": {
+    "@babel/core": "7.9.6",
+    "@babel/runtime": "7.9.6",
+    "@react-native-community/eslint-config": "0.0.5",
+    "babel-jest": "24.9.0",
+    "better-docs": "^2.0.1",
+    "eslint": "6.8.0",
+    "jest": "24.9.0",
+    "metro-react-native-babel-preset": "0.58.0",
+    "react-test-renderer": "16.11.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
